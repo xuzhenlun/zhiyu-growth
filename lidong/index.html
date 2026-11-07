@@ -4,10 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#07131f" />
-    <meta name="description" content="立冬快乐，致雯雯老大。愿你在这个冬天，没有风霜雨雪，只有暖阳高照。" />
+    <meta name="description" content="立冬快乐，致雯雯老大。岁暮天寒，愿君安暖；愿你三冬暖，春不寒。" />
     <meta property="og:title" content="立冬快乐 · 致雯雯老大" />
-    <meta property="og:description" content="愿你在这个冬天，没有风霜雨雪，只有暖阳高照。" />
+    <meta property="og:description" content="岁暮天寒，愿君安暖。一庭风雪，半盏清欢。" />
     <title>立冬快乐 · 致雯雯老大</title>
+    <!-- Background motion: Vanta.js FOG (MIT) + Three.js (MIT), bundled locally. -->
+    <script src="./three.min.js" defer></script>
+    <script src="./vanta.fog.min.js" defer></script>
     <style>
       :root {
         --night: #07131f;
@@ -26,7 +29,7 @@
       }
 
       * { box-sizing: border-box; }
-      html { background: var(--night); }
+      html { background: var(--night); overflow-x: hidden; }
 
       body {
         margin: 0;
@@ -49,6 +52,12 @@
           radial-gradient(circle at 78% 12%, rgba(171, 220, 246, 0.16), transparent 23rem),
           radial-gradient(circle at 13% 76%, rgba(62, 130, 157, 0.18), transparent 28rem),
           linear-gradient(180deg, #06101b 0%, #091b2a 38%, #102d3d 73%, #071521 100%);
+        transition: transform 900ms ease, filter 900ms ease;
+      }
+
+      .is-celebrating .winter {
+        transform: scale(1.035);
+        filter: blur(1px) brightness(0.72);
       }
 
       .scene {
@@ -56,6 +65,60 @@
         inset: 0;
         z-index: 0;
         pointer-events: none;
+      }
+
+      .vanta-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        background: transparent;
+      }
+
+      .vanta-layer canvas {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0.82;
+        filter: saturate(0.82) contrast(1.06);
+      }
+
+      .flow {
+        position: absolute;
+        inset: -24%;
+        z-index: 1;
+        pointer-events: none;
+        filter: blur(38px);
+        opacity: 0.8;
+        transform-origin: center;
+      }
+
+      .flow-blue {
+        background: linear-gradient(
+          112deg,
+          transparent 18%,
+          rgba(80, 183, 211, 0.13) 34%,
+          rgba(194, 236, 252, 0.09) 44%,
+          transparent 60%
+        );
+        animation: flowSweep 16s ease-in-out infinite alternate;
+      }
+
+      .flow-rose {
+        background: linear-gradient(
+          292deg,
+          transparent 22%,
+          rgba(211, 137, 157, 0.08) 38%,
+          rgba(243, 187, 198, 0.05) 45%,
+          transparent 62%
+        );
+        animation: flowSweep 20s ease-in-out infinite alternate-reverse;
+        opacity: 0.65;
+      }
+
+      @keyframes flowSweep {
+        0% { transform: translate3d(-12%, -8%, 0) rotate(-8deg) scale(1); }
+        100% { transform: translate3d(13%, 7%, 0) rotate(-2deg) scale(1.18); }
       }
 
       .scene::after {
@@ -102,6 +165,12 @@
           radial-gradient(ellipse at 40% 40%, rgba(70, 116, 173, 0.12), transparent 70%);
         filter: blur(24px);
         transform: rotate(-12deg);
+        animation: auroraDrift 18s ease-in-out infinite alternate;
+      }
+
+      @keyframes auroraDrift {
+        0% { transform: translate3d(-3%, 0, 0) rotate(-12deg) scale(1); opacity: 0.65; }
+        100% { transform: translate3d(7%, 4%, 0) rotate(-7deg) scale(1.15); opacity: 0.95; }
       }
 
       .forest {
@@ -132,6 +201,12 @@
           radial-gradient(ellipse at 20% 50%, rgba(165, 214, 230, 0.16), transparent 60%),
           radial-gradient(ellipse at 68% 65%, rgba(150, 208, 226, 0.13), transparent 58%);
         filter: blur(18px);
+        animation: fogDrift 15s ease-in-out infinite alternate;
+      }
+
+      @keyframes fogDrift {
+        0% { transform: translate3d(-4%, 0, 0) scale(1); opacity: 0.55; }
+        100% { transform: translate3d(8%, -3%, 0) scale(1.12); opacity: 0.9; }
       }
 
       .ghost {
@@ -221,6 +296,12 @@
         z-index: 3;
         max-width: 680px;
         text-align: center;
+        animation: softIn 1.3s cubic-bezier(0.2, 0.75, 0.25, 1) both 0.12s;
+      }
+
+      @keyframes softIn {
+        from { opacity: 0; transform: translateY(16px); filter: blur(5px); }
+        to { opacity: 1; transform: translateY(0); filter: blur(0); }
       }
 
       .eyebrow {
@@ -385,6 +466,7 @@
           linear-gradient(145deg, rgba(5, 20, 32, 0.74), rgba(6, 22, 34, 0.55));
         box-shadow: 0 24px 70px rgba(0, 6, 12, 0.28), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
         backdrop-filter: blur(18px);
+        animation: softIn 1.3s cubic-bezier(0.2, 0.75, 0.25, 1) both 0.45s;
       }
 
       .letter::after {
@@ -454,6 +536,22 @@
 
       .letter .soft {
         color: var(--rose);
+      }
+
+      .letter .quote {
+        margin-top: 16px;
+        padding-left: 12px;
+        border-left: 1px solid rgba(243, 187, 198, 0.44);
+        color: rgba(226, 242, 249, 0.52);
+        font-size: 10px;
+        line-height: 1.9;
+      }
+
+      .letter .warmline {
+        margin-top: 18px;
+        color: rgba(205, 233, 244, 0.44);
+        font-size: 9px;
+        letter-spacing: 0.08em;
       }
 
       .letter .blessing {
@@ -546,6 +644,411 @@
 
       .footer .dot { color: rgba(243, 187, 198, 0.5); }
 
+      .blessing-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 38%, rgba(30, 85, 105, 0.42), transparent 45%),
+          rgba(2, 9, 15, 0.82);
+        opacity: 0;
+        backdrop-filter: blur(16px);
+        transition: opacity 500ms ease;
+      }
+
+      .blessing-overlay[hidden] { display: none; }
+
+      .blessing-overlay.open { opacity: 1; }
+
+      .overlay-aurora {
+        position: absolute;
+        inset: -30%;
+        z-index: 0;
+        background:
+          conic-gradient(from 30deg at 50% 50%,
+            transparent 0deg 30deg,
+            rgba(86, 185, 211, 0.15) 44deg,
+            transparent 62deg 150deg,
+            rgba(200, 128, 150, 0.1) 176deg,
+            transparent 196deg 286deg,
+            rgba(98, 184, 219, 0.13) 308deg,
+            transparent 332deg);
+        filter: blur(34px);
+        animation: overlayAurora 18s linear infinite;
+        opacity: 0.8;
+      }
+
+      @keyframes overlayAurora {
+        from { transform: rotate(0deg) scale(1); }
+        to { transform: rotate(360deg) scale(1.08); }
+      }
+
+      .overlay-rays {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 0;
+        width: 140vmax;
+        height: 140vmax;
+        background: repeating-conic-gradient(
+          from 0deg,
+          rgba(190, 235, 252, 0.1) 0deg 0.6deg,
+          transparent 0.6deg 11deg
+        );
+        -webkit-mask-image: radial-gradient(circle, transparent 0 11%, #000 26%, transparent 60%);
+        mask-image: radial-gradient(circle, transparent 0 11%, #000 26%, transparent 60%);
+        transform: translate(-50%, -50%);
+        animation: raySpin 34s linear infinite;
+        opacity: 0;
+        transition: opacity 900ms ease;
+      }
+
+      .blessing-overlay.open .overlay-rays { opacity: 0.72; }
+
+      @keyframes raySpin {
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+
+      .overlay-orb {
+        position: absolute;
+        z-index: 0;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        filter: blur(46px);
+        opacity: 0;
+        animation: orbFloat 8s ease-in-out infinite alternate;
+        transition: opacity 900ms ease;
+      }
+
+      .blessing-overlay.open .overlay-orb { opacity: 0.8; }
+
+      .orb-a {
+        top: 3%;
+        left: 4%;
+        background: radial-gradient(circle, rgba(66, 158, 183, 0.26), transparent 68%);
+      }
+
+      .orb-b {
+        right: 2%;
+        bottom: 3%;
+        background: radial-gradient(circle, rgba(200, 120, 142, 0.2), transparent 68%);
+        animation-delay: -4s;
+      }
+
+      @keyframes orbFloat {
+        0% { transform: translate3d(-4%, 3%, 0) scale(0.92); }
+        100% { transform: translate3d(9%, -7%, 0) scale(1.18); }
+      }
+
+      .overlay-flash {
+        position: absolute;
+        inset: -20%;
+        z-index: 1;
+        background: radial-gradient(circle, rgba(228, 248, 255, 0.9), rgba(155, 218, 243, 0.28) 28%, transparent 62%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .overlay-wipe {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 2;
+        width: 12vmax;
+        height: 12vmax;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(242, 253, 255, 0.96), rgba(178, 230, 247, 0.42) 32%, transparent 68%);
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+        pointer-events: none;
+      }
+
+      .blessing-overlay.open .overlay-wipe {
+        animation: overlayWipe 1.05s cubic-bezier(0.12, 0.72, 0.2, 1) both;
+      }
+
+      @keyframes overlayWipe {
+        0% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
+        58% { opacity: 0.72; }
+        100% { opacity: 0; transform: translate(-50%, -50%) scale(18); }
+      }
+
+      .overlay-stars {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .overlay-star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        border-radius: 50%;
+        background: #e2f8ff;
+        box-shadow: 0 0 8px rgba(178, 231, 250, 0.8);
+        opacity: 0;
+        animation: starTwinkle 3.6s ease-in-out infinite;
+      }
+
+      .overlay-star.rose {
+        background: #f3c4cd;
+        box-shadow: 0 0 9px rgba(243, 187, 198, 0.7);
+      }
+
+      @keyframes starTwinkle {
+        0%, 100% { opacity: 0.08; transform: scale(0.7); }
+        50% { opacity: 0.95; transform: scale(1.25); }
+      }
+
+      .blessing-overlay.open .overlay-flash {
+        animation: overlayFlash 1.6s cubic-bezier(0.15, 0.7, 0.2, 1) both;
+      }
+
+      @keyframes overlayFlash {
+        0% { opacity: 0; transform: scale(0.35); }
+        18% { opacity: 0.92; }
+        100% { opacity: 0; transform: scale(1.7); }
+      }
+
+      .burst-canvas {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .overlay-ring {
+        position: absolute;
+        z-index: 2;
+        width: 90px;
+        height: 90px;
+        border: 2px solid rgba(199, 239, 253, 0.64);
+        border-radius: 50%;
+        box-shadow: 0 0 28px rgba(161, 222, 245, 0.26), 0 0 80px rgba(161, 222, 245, 0.08);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .blessing-overlay.open .overlay-ring {
+        animation: ringOut 2s cubic-bezier(0.1, 0.65, 0.2, 1) both;
+      }
+
+      .blessing-overlay.open .ring-2 {
+        animation-delay: 0.18s;
+        border-color: rgba(243, 187, 198, 0.35);
+      }
+
+      @keyframes ringOut {
+        0% { opacity: 0; transform: scale(0.4); }
+        18% { opacity: 0.9; }
+        100% { opacity: 0; transform: scale(7.4); }
+      }
+
+      .overlay-card {
+        position: relative;
+        z-index: 3;
+        width: min(100%, 540px);
+        padding: 43px 34px 31px;
+        overflow: hidden;
+        border: 1px solid rgba(212, 241, 253, 0.3);
+        border-radius: 22px;
+        background:
+          radial-gradient(circle at 100% 0%, rgba(113, 183, 207, 0.18), transparent 38%),
+          radial-gradient(circle at 0% 100%, rgba(203, 138, 156, 0.1), transparent 38%),
+          linear-gradient(150deg, rgba(8, 29, 43, 0.94), rgba(5, 18, 29, 0.9));
+        box-shadow:
+          0 35px 100px rgba(0, 5, 10, 0.6),
+          0 0 80px rgba(142, 211, 238, 0.08),
+          0 1px 0 rgba(255, 255, 255, 0.1) inset;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(30px) scale(0.84);
+        filter: blur(9px);
+        transition:
+          opacity 720ms ease 80ms,
+          transform 820ms cubic-bezier(0.16, 1.16, 0.3, 1) 80ms,
+          filter 720ms ease 80ms;
+        backdrop-filter: blur(24px);
+      }
+
+      .overlay-card::before {
+        content: "";
+        position: absolute;
+        inset: 11px;
+        border: 1px solid rgba(215, 243, 253, 0.1);
+        border-radius: 15px;
+        pointer-events: none;
+      }
+
+      .overlay-card::after {
+        content: "";
+        position: absolute;
+        top: -65%;
+        left: -60%;
+        z-index: 0;
+        width: 44%;
+        height: 230%;
+        transform: rotate(19deg);
+        background: linear-gradient(90deg, transparent, rgba(228, 248, 255, 0.08), transparent);
+        animation: cardSheen 6.5s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      .overlay-card > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      @keyframes cardSheen {
+        0%, 30% { left: -60%; opacity: 0; }
+        48% { opacity: 1; }
+        78%, 100% { left: 130%; opacity: 0; }
+      }
+
+      .blessing-overlay.open .overlay-card {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+
+      .overlay-close {
+        position: absolute;
+        top: 15px;
+        right: 16px;
+        z-index: 4;
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid rgba(211, 240, 252, 0.16);
+        border-radius: 50%;
+        background: rgba(5, 20, 30, 0.4);
+        color: rgba(207, 234, 245, 0.65);
+        font-size: 17px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .overlay-close:hover {
+        color: #fff;
+        border-color: rgba(211, 240, 252, 0.45);
+      }
+
+      .overlay-kicker {
+        display: block;
+        margin-bottom: 19px;
+        color: rgba(187, 226, 242, 0.6);
+        font-size: 8px;
+        letter-spacing: 0.25em;
+      }
+
+      .overlay-seal {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        margin: 0 auto 16px;
+        border: 1px solid rgba(243, 187, 198, 0.55);
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, rgba(243, 187, 198, 0.3), rgba(151, 77, 93, 0.2));
+        color: #f5cbd3;
+        font-family: var(--serif);
+        font-size: 16px;
+        box-shadow: 0 0 30px rgba(243, 187, 198, 0.09);
+      }
+
+      .overlay-card h2 {
+        margin: 0;
+        color: #f5fbff;
+        font-family: var(--serif);
+        font-size: clamp(38px, 6vw, 54px);
+        font-weight: 700;
+        line-height: 1.25;
+        letter-spacing: -0.04em;
+      }
+
+      .overlay-card h2 em {
+        color: transparent;
+        font-style: normal;
+        background: linear-gradient(100deg, #f8fdff, #a9def3 52%, #e9bdc6);
+        background-size: 220% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: textShimmer 8s ease-in-out infinite;
+      }
+
+      @keyframes textShimmer {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+
+      .overlay-poem {
+        margin: 20px 0 0;
+        color: rgba(225, 244, 252, 0.82);
+        font-family: var(--serif);
+        font-size: 13px;
+        line-height: 2;
+        letter-spacing: 0.08em;
+      }
+
+      .overlay-divider {
+        width: 34px;
+        height: 1px;
+        margin: 22px auto;
+        background: linear-gradient(90deg, transparent, rgba(218, 243, 252, 0.55), transparent);
+      }
+
+      .overlay-wish {
+        margin: 0;
+        color: rgba(208, 237, 248, 0.64);
+        font-family: var(--serif);
+        font-size: 11px;
+        line-height: 2.05;
+        letter-spacing: 0.08em;
+      }
+
+      .overlay-sign {
+        margin: 24px 0 0;
+        color: rgba(179, 217, 233, 0.38);
+        font-size: 8px;
+        letter-spacing: 0.15em;
+      }
+
+      .overlay-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 36px;
+        margin-top: 22px;
+        padding: 0 16px;
+        border: 1px solid rgba(211, 241, 253, 0.24);
+        border-radius: 999px;
+        background: rgba(9, 33, 47, 0.5);
+        color: rgba(229, 248, 255, 0.74);
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        transition: 160ms ease;
+      }
+
+      .overlay-back:hover {
+        border-color: rgba(221, 246, 255, 0.55);
+        background: rgba(30, 72, 91, 0.55);
+      }
+
+      .is-celebrating { overflow: hidden; }
+
       .is-blessed .snow-canvas { opacity: 1; }
 
       @media (max-width: 680px) {
@@ -569,6 +1072,13 @@
         .letter-foot { font-size: 7px; }
         .moon { top: 4%; right: 2%; }
         .ghost { top: 40%; font-size: 46vw; }
+        .blessing-overlay { padding: 16px; }
+        .overlay-card { padding: 35px 21px 26px; border-radius: 18px; }
+        .overlay-card h2 { font-size: 36px; }
+        .overlay-poem { font-size: 12px; }
+        .overlay-wish { font-size: 10px; }
+        .overlay-kicker { margin-bottom: 15px; font-size: 7px; }
+        .overlay-sign { font-size: 7px; }
       }
 
       @media (max-width: 390px) {
@@ -582,12 +1092,23 @@
         .note { animation: none; }
         .accept { transition: none; }
         .snow-canvas { display: none; }
+        .aurora, .fog, .hero-center, .letter { animation: none; }
+        .overlay-flash, .overlay-ring, .overlay-wipe, .burst-canvas { display: none; }
+        .overlay-aurora, .overlay-rays, .overlay-orb, .overlay-card::after, .overlay-card h2 em { animation: none; }
+        .overlay-star { animation: none; opacity: 0.5; }
+        .blessing-overlay, .overlay-card { transition: none; }
+        .winter { transition: none; }
+        .is-celebrating .winter { transform: none; filter: none; }
+        .vanta-layer { display: none; }
       }
     </style>
   </head>
   <body>
     <main class="winter">
       <div class="scene" aria-hidden="true">
+        <div id="vanta" class="vanta-layer"></div>
+        <div class="flow flow-blue"></div>
+        <div class="flow flow-rose"></div>
         <div class="aurora"></div>
         <div class="moon"></div>
         <div class="ghost">立冬快乐</div>
@@ -659,27 +1180,30 @@
         </header>
 
         <section class="hero">
-          <div class="note n1"><i>❄</i>立冬了<em>我想你了</em></div>
-          <div class="note n2"><i>♡</i>你是我的<em>小暖炉</em></div>
-          <div class="note n3"><i>❄</i>天冷了<em>记得多穿点</em></div>
-          <div class="note n4"><i>♡</i>想陪你<em>一整个冬天</em></div>
-          <div class="note n5"><i>❄</i>一起吃饺子吧<em>热乎乎的</em></div>
+          <div class="note n1"><i>❄</i>立冬已至<em>岁寒添衣</em></div>
+          <div class="note n2"><i>♡</i>北风有信<em>落雪为笺</em></div>
+          <div class="note n3"><i>❄</i>一庭风雪<em>半盏清欢</em></div>
+          <div class="note n4"><i>♡</i>围炉煮雪<em>静待春信</em></div>
+          <div class="note n5"><i>❄</i>霜雪落笔<em>写不尽温柔</em></div>
           <div class="note n6 faint"><i>✦</i>HELLO, WINTER</div>
 
           <div class="hero-center">
-            <p class="eyebrow">WINTER BEGINS · 万物收藏</p>
+            <p class="eyebrow">岁暮天寒 · 万物收藏</p>
             <div class="to"><span class="seal">雯</span>致 <strong>雯雯老大</strong></div>
             <h1>立冬<span class="outline">快乐</span></h1>
-            <p class="sub">风里已经有了冬天的味道<br />想把这一整个冬天的温柔，先送给你</p>
-            <p class="wishline">天冷了，多穿点 <span>·</span> 陪你一整个冬天 <span>·</span> 朋友，立冬快乐</p>
+            <p class="sub">北风有信，落雪为笺<br />愿这一整个冬天的温柔，都奔你而来</p>
+            <p class="wishline">立冬了，我想你了 <span>·</span> 天冷了，多穿点 <span>·</span> 朋友，立冬快乐</p>
           </div>
         </section>
 
         <section class="letter" aria-label="写给雯雯老大的冬日来信">
           <div class="letter-head"><span>TO / 雯雯老大</span><span>一份冬日来信 · 请查收</span></div>
-          <p class="lead">愿你在这个冬天，<br /><em>没有风霜雨雪，只有暖阳高照。</em></p>
-          <p class="body">天冷了，记得多穿一点；忙的时候，也别忘了好好吃饭。<br />如果雪落下来，就当是我在轻轻说：<span class="soft">想陪你一整个冬天。</span></p>
-          <p class="blessing">立冬快乐，<br /><span>要一直做闪闪发光的雯雯老大。</span></p>
+          <p class="lead">岁暮天寒，<br /><em>愿君安暖。</em></p>
+          <p class="body">一庭风雪，半盏清欢。愿雯雯老大在这个冬天，有衣暖身，有人暖心；所遇皆温柔，所行皆坦途。</p>
+          <p class="quote">愿你在这个冬天，没有风霜雨雪，只有暖阳高照。</p>
+          <p class="body">若雪落下来，就当是我在轻轻说：<span class="soft">想陪你一整个冬天。</span></p>
+          <p class="blessing">立冬快乐，<br /><span>愿你三冬暖，愿你春不寒。</span></p>
+          <p class="warmline">也想和你一起吃饺子，做彼此的小暖炉。</p>
           <div class="letter-foot"><span>立冬 · 2026</span><span>把冬天，过成春天</span></div>
         </section>
 
@@ -691,6 +1215,30 @@
       </div>
     </main>
 
+    <div class="blessing-overlay" id="blessingOverlay" hidden>
+      <div class="overlay-aurora" aria-hidden="true"></div>
+      <div class="overlay-rays" aria-hidden="true"></div>
+      <div class="overlay-flash" aria-hidden="true"></div>
+      <div class="overlay-wipe" aria-hidden="true"></div>
+      <div class="overlay-stars" id="overlayStars" aria-hidden="true"></div>
+      <span class="overlay-orb orb-a" aria-hidden="true"></span>
+      <span class="overlay-orb orb-b" aria-hidden="true"></span>
+      <canvas class="burst-canvas" id="burstCanvas" aria-hidden="true"></canvas>
+      <span class="overlay-ring ring-1" aria-hidden="true"></span>
+      <span class="overlay-ring ring-2" aria-hidden="true"></span>
+      <div class="overlay-card" role="dialog" aria-modal="true" aria-labelledby="blessingTitle">
+        <button class="overlay-close" id="overlayClose" type="button" aria-label="关闭祝福">×</button>
+        <span class="overlay-kicker">A WINTER BLESSING FOR YOU</span>
+        <span class="overlay-seal">雯</span>
+        <h2 id="blessingTitle">雯雯老大，<br /><em>立冬快乐。</em></h2>
+        <p class="overlay-poem">岁暮天寒，愿君安暖。<br />一庭风雪，半盏清欢。</p>
+        <div class="overlay-divider"></div>
+        <p class="overlay-wish">愿你三冬暖，愿你春不寒；<br />所遇皆温柔，所行皆坦途。</p>
+        <p class="overlay-sign">这份祝福，已被冬天收藏 · 2026.11.07</p>
+        <button class="overlay-back" id="overlayBack" type="button">回到雪夜</button>
+      </div>
+    </div>
+
     <script>
       (() => {
         const canvas = document.getElementById("snowCanvas");
@@ -701,6 +1249,35 @@
         let height = 0;
         let dpr = Math.min(window.devicePixelRatio || 1, 2);
         let raf = 0;
+        const overlay = document.getElementById("blessingOverlay");
+        const acceptBtn = document.getElementById("acceptBtn");
+        const overlayClose = document.getElementById("overlayClose");
+        const overlayBack = document.getElementById("overlayBack");
+        const burstCanvas = document.getElementById("burstCanvas");
+        const burstCtx = burstCanvas.getContext("2d");
+        let burstRaf = 0;
+        let burstParticles = [];
+        let burstEmitUntil = 0;
+        let motes = [];
+        let overlayOpen = false;
+        let closeTimer = 0;
+
+        function seedOverlayStars() {
+          const layer = document.getElementById("overlayStars");
+          if (!layer) return;
+          for (let i = 0; i < 48; i += 1) {
+            const star = document.createElement("span");
+            star.className = "overlay-star" + (Math.random() > 0.72 ? " rose" : "");
+            const size = 1 + Math.random() * 2.4;
+            star.style.left = (4 + Math.random() * 92).toFixed(2) + "%";
+            star.style.top = (4 + Math.random() * 92).toFixed(2) + "%";
+            star.style.width = size.toFixed(2) + "px";
+            star.style.height = size.toFixed(2) + "px";
+            star.style.animationDelay = (-Math.random() * 4).toFixed(2) + "s";
+            star.style.animationDuration = (2.8 + Math.random() * 3.8).toFixed(2) + "s";
+            layer.appendChild(star);
+          }
+        }
 
         function resize() {
           width = window.innerWidth;
@@ -772,14 +1349,272 @@
           }
         }
 
-        document.getElementById("acceptBtn").addEventListener("click", (event) => {
-          const button = event.currentTarget;
-          button.innerHTML = '祝福已送达 <span>❄</span>';
-          button.disabled = true;
-          document.body.classList.add("is-blessed");
-          document.getElementById("accepted").classList.add("show");
+        function resizeBurst() {
+          burstCanvas.width = width * dpr;
+          burstCanvas.height = height * dpr;
+          burstCanvas.style.width = width + "px";
+          burstCanvas.style.height = height + "px";
+          burstCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function makeBurstParticle() {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 1.8 + Math.random() * 10.5;
+          const palette = [
+            "rgba(238, 250, 255, ",
+            "rgba(164, 220, 244, ",
+            "rgba(243, 187, 198, ",
+            "rgba(255, 224, 172, ",
+            "rgba(131, 198, 224, ",
+            "rgba(255, 246, 221, ",
+          ];
+          return {
+            x: width * 0.5 + (Math.random() - 0.5) * 110,
+            y: height * 0.46 + (Math.random() - 0.5) * 80,
+            px: width * 0.5,
+            py: height * 0.46,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 2.2,
+            size: 1.1 + Math.random() * 4.2,
+            gravity: 0.035 + Math.random() * 0.07,
+            drag: 0.986 - Math.random() * 0.01,
+            life: 1.15 + Math.random() * 1.2,
+            decay: 0.004 + Math.random() * 0.009,
+            alpha: 0.48 + Math.random() * 0.5,
+            color: palette[Math.floor(Math.random() * palette.length)],
+            petal: Math.random() > 0.56,
+            streak: Math.random() > 0.68,
+            rotation: Math.random() * Math.PI,
+            spin: (Math.random() - 0.5) * 0.22,
+          };
+        }
+
+        function makeMote() {
+          const palette = [
+            "rgba(232, 249, 255, ",
+            "rgba(166, 224, 247, ",
+            "rgba(245, 193, 203, ",
+            "rgba(255, 228, 180, ",
+          ];
+          return {
+            baseX: Math.random() * width,
+            y: Math.random() * height,
+            x: 0,
+            r: 0.7 + Math.random() * 2.6,
+            drift: 4 + Math.random() * 17,
+            speed: 0.06 + Math.random() * 0.22,
+            phase: Math.random() * Math.PI * 2,
+            phaseSpeed: 0.003 + Math.random() * 0.009,
+            alpha: 0.18 + Math.random() * 0.5,
+            color: palette[Math.floor(Math.random() * palette.length)],
+          };
+        }
+
+        function seedMotes() {
+          motes = [];
+          const count = width < 680 ? 42 : 64;
+          for (let i = 0; i < count; i += 1) motes.push(makeMote());
+        }
+
+        function drawMotes() {
+          for (const mote of motes) {
+            mote.y -= mote.speed;
+            mote.phase += mote.phaseSpeed;
+            mote.x = mote.baseX + Math.sin(mote.phase) * mote.drift;
+            if (mote.y < -12) {
+              mote.y = height + 12;
+              mote.baseX = Math.random() * width;
+            }
+            if (mote.x < -12) mote.x = width + 12;
+            if (mote.x > width + 12) mote.x = -12;
+
+            burstCtx.fillStyle = mote.color + (mote.alpha * 0.12).toFixed(3) + ")";
+            burstCtx.beginPath();
+            burstCtx.arc(mote.x, mote.y, mote.r * 3.6, 0, Math.PI * 2);
+            burstCtx.fill();
+
+            burstCtx.fillStyle = mote.color + mote.alpha.toFixed(3) + ")";
+            burstCtx.beginPath();
+            burstCtx.arc(mote.x, mote.y, mote.r, 0, Math.PI * 2);
+            burstCtx.fill();
+          }
+        }
+
+        function startBurst() {
+          if (reduceMotion) return;
+          resizeBurst();
+          burstParticles = [];
+          seedMotes();
+          burstEmitUntil = performance.now() + 2100;
+          const count = window.innerWidth < 680 ? 190 : 260;
+          for (let i = 0; i < count; i += 1) burstParticles.push(makeBurstParticle());
+          if (burstRaf) cancelAnimationFrame(burstRaf);
+          drawBurst();
+        }
+
+        function drawBurst() {
+          burstCtx.clearRect(0, 0, width, height);
+          burstCtx.globalCompositeOperation = "lighter";
+
+          if (performance.now() < burstEmitUntil && burstParticles.length < 430) {
+            for (let i = 0; i < 5; i += 1) burstParticles.push(makeBurstParticle());
+          }
+
+          let alive = 0;
+
+          for (const particle of burstParticles) {
+            particle.life -= particle.decay;
+            if (particle.life <= 0) continue;
+            alive += 1;
+
+            particle.px = particle.x;
+            particle.py = particle.y;
+            particle.vx *= particle.drag;
+            particle.vy = particle.vy * particle.drag + particle.gravity;
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            particle.rotation += particle.spin;
+
+            const alpha = Math.min(1, particle.life * 1.8) * particle.alpha;
+            const glow = particle.color + (alpha * 0.12).toFixed(3) + ")";
+            const core = particle.color + alpha.toFixed(3) + ")";
+
+            if (particle.streak) {
+              burstCtx.strokeStyle = glow;
+              burstCtx.lineWidth = Math.max(0.8, particle.size * 0.7);
+              burstCtx.beginPath();
+              burstCtx.moveTo(particle.x - particle.vx * 3.2, particle.y - particle.vy * 3.2);
+              burstCtx.lineTo(particle.x, particle.y);
+              burstCtx.stroke();
+            }
+
+            burstCtx.fillStyle = glow;
+            burstCtx.beginPath();
+            burstCtx.arc(particle.x, particle.y, particle.size * 2.6, 0, Math.PI * 2);
+            burstCtx.fill();
+
+            burstCtx.fillStyle = core;
+            if (particle.petal) {
+              burstCtx.save();
+              burstCtx.translate(particle.x, particle.y);
+              burstCtx.rotate(particle.rotation);
+              burstCtx.beginPath();
+              burstCtx.ellipse(0, 0, particle.size * 2.1, particle.size * 0.8, 0, 0, Math.PI * 2);
+              burstCtx.fill();
+              burstCtx.restore();
+            } else {
+              burstCtx.beginPath();
+              burstCtx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+              burstCtx.fill();
+            }
+          }
+
+          drawMotes();
+
+          if (alive > 0 || performance.now() < burstEmitUntil || overlayOpen) {
+            burstRaf = requestAnimationFrame(drawBurst);
+          } else {
+            burstRaf = 0;
+            burstParticles = [];
+            burstCtx.clearRect(0, 0, width, height);
+          }
+        }
+
+        function stopBurst() {
+          burstEmitUntil = 0;
+          if (burstRaf) cancelAnimationFrame(burstRaf);
+          burstRaf = 0;
+          burstParticles = [];
+          motes = [];
+          burstCtx.clearRect(0, 0, width, height);
+        }
+
+        function initVanta() {
+          const el = document.getElementById("vanta");
+          if (
+            !el ||
+            reduceMotion ||
+            !window.VANTA ||
+            !window.VANTA.FOG ||
+            !window.THREE
+          ) {
+            if (el) el.style.display = "none";
+            return;
+          }
+
+          try {
+            window.__vantaFog = window.VANTA.FOG({
+              el,
+              THREE: window.THREE,
+              mouseControls: false,
+              touchControls: false,
+              gyroControls: false,
+              minHeight: 200,
+              minWidth: 200,
+              highlightColor: 0x9fd8f0,
+              midtoneColor: 0x1b4a5f,
+              lowlightColor: 0x071b2a,
+              baseColor: 0x030d16,
+              blurFactor: 0.68,
+              speed: 1.15,
+              zoom: 0.86,
+            });
+            window.addEventListener("resize", () => window.__vantaFog.resize());
+          } catch (error) {
+            console.warn("Vanta fog could not start", error);
+            el.style.display = "none";
+          }
+        }
+
+        function openBlessing() {
+          if (overlayOpen) return;
+          overlayOpen = true;
+          window.clearTimeout(closeTimer);
+          overlay.hidden = false;
+          document.body.classList.add("is-celebrating");
+          acceptBtn.disabled = true;
+          acceptBtn.innerHTML = "祝福已送达 <span>❄</span>";
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => overlay.classList.add("open"));
+          });
           burst();
+          burst();
+          startBurst();
+          if (window.__vantaFog && window.__vantaFog.setOptions) {
+            window.__vantaFog.setOptions({ speed: 2.15, zoom: 1.12 });
+          }
+          window.setTimeout(() => overlayClose.focus({ preventScroll: true }), 700);
+        }
+
+        function closeBlessing() {
+          if (!overlayOpen) return;
+          overlayOpen = false;
+          overlay.classList.remove("open");
+          document.body.classList.remove("is-celebrating");
+          stopBurst();
+          if (window.__vantaFog && window.__vantaFog.setOptions) {
+            window.__vantaFog.setOptions({ speed: 1.15, zoom: 0.86 });
+          }
+          closeTimer = window.setTimeout(() => {
+            overlay.hidden = true;
+          }, 520);
+          window.setTimeout(() => {
+            acceptBtn.disabled = false;
+            acceptBtn.innerHTML = "再看一次冬日祝福 <span>❄</span>";
+            acceptBtn.focus({ preventScroll: true });
+          }, 80);
+        }
+
+        acceptBtn.addEventListener("click", openBlessing);
+        overlayClose.addEventListener("click", closeBlessing);
+        overlayBack.addEventListener("click", closeBlessing);
+        overlay.addEventListener("click", (event) => {
+          if (event.target === overlay) closeBlessing();
         });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && overlayOpen) closeBlessing();
+        });
+        window.addEventListener("load", initVanta);
 
         let resizeTimer = 0;
         window.addEventListener("resize", () => {
@@ -787,9 +1622,11 @@
           resizeTimer = setTimeout(() => {
             resize();
             seed();
+            if (overlayOpen) resizeBurst();
           }, 180);
         });
 
+        seedOverlayStars();
         init();
       })();
     </script>
