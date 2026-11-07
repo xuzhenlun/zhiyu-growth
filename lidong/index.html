@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#07131f" />
+    <meta name="description" content="立冬快乐，致雯雯老大。愿你在这个冬天，没有风霜雨雪，只有暖阳高照。" />
+    <meta property="og:title" content="立冬快乐 · 致雯雯老大" />
+    <meta property="og:description" content="愿你在这个冬天，没有风霜雨雪，只有暖阳高照。" />
+    <title>立冬快乐 · 致雯雯老大</title>
+    <style>
+      :root {
+        --night: #07131f;
+        --night-2: #0a1d2d;
+        --night-3: #123448;
+        --ice: #eef8ff;
+        --ice-dim: #c6ddec;
+        --mist: #9fc5d8;
+        --blue: #a8ddff;
+        --rose: #f3bbc6;
+        --rose-deep: #e89aaa;
+        --glass: rgba(8, 23, 35, 0.5);
+        --line: rgba(220, 242, 255, 0.18);
+        --serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", Georgia, serif;
+        --sans: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+      html { background: var(--night); }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        color: var(--ice);
+        background: var(--night);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      button { font: inherit; }
+
+      .winter {
+        position: relative;
+        min-height: 100svh;
+        isolation: isolate;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 78% 12%, rgba(171, 220, 246, 0.16), transparent 23rem),
+          radial-gradient(circle at 13% 76%, rgba(62, 130, 157, 0.18), transparent 28rem),
+          linear-gradient(180deg, #06101b 0%, #091b2a 38%, #102d3d 73%, #071521 100%);
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .scene::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(4, 12, 20, 0.3) 0%, transparent 22%, transparent 72%, rgba(3, 10, 17, 0.65) 100%),
+          radial-gradient(ellipse at 50% 45%, transparent 42%, rgba(3, 10, 17, 0.48) 100%);
+      }
+
+      .moon {
+        position: absolute;
+        top: 8%;
+        right: 8%;
+        width: clamp(90px, 12vw, 170px);
+        height: clamp(90px, 12vw, 170px);
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 37% 33%, #f8fdff 0%, #d7ebf5 38%, #aacbdc 65%, rgba(126, 171, 190, 0.3) 74%, transparent 75%);
+        box-shadow:
+          0 0 45px rgba(219, 246, 255, 0.28),
+          0 0 100px rgba(147, 209, 235, 0.16);
+        opacity: 0.86;
+        filter: blur(0.2px);
+      }
+
+      .moon::before {
+        content: "";
+        position: absolute;
+        inset: -50%;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(154, 216, 244, 0.12), transparent 60%);
+      }
+
+      .aurora {
+        position: absolute;
+        top: -18%;
+        left: -12%;
+        width: 74%;
+        height: 52%;
+        background:
+          radial-gradient(ellipse at 50% 50%, rgba(83, 166, 184, 0.16), transparent 62%),
+          radial-gradient(ellipse at 40% 40%, rgba(70, 116, 173, 0.12), transparent 70%);
+        filter: blur(24px);
+        transform: rotate(-12deg);
+      }
+
+      .forest {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 62%;
+        opacity: 0.94;
+      }
+
+      .forest.far {
+        bottom: 20%;
+        height: 45%;
+        opacity: 0.35;
+        filter: blur(2px);
+        transform: scale(1.3);
+        transform-origin: center bottom;
+      }
+
+      .fog {
+        position: absolute;
+        left: -10%;
+        right: -10%;
+        bottom: 12%;
+        height: 26%;
+        background:
+          radial-gradient(ellipse at 20% 50%, rgba(165, 214, 230, 0.16), transparent 60%),
+          radial-gradient(ellipse at 68% 65%, rgba(150, 208, 226, 0.13), transparent 58%);
+        filter: blur(18px);
+      }
+
+      .ghost {
+        position: absolute;
+        left: 50%;
+        top: 37%;
+        z-index: 1;
+        color: rgba(232, 248, 255, 0.055);
+        font-family: var(--serif);
+        font-size: clamp(190px, 38vw, 560px);
+        font-weight: 700;
+        letter-spacing: -0.12em;
+        line-height: 0.8;
+        white-space: nowrap;
+        transform: translate(-50%, -50%);
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .snow-canvas {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .page {
+        position: relative;
+        z-index: 3;
+        width: min(100%, 850px);
+        min-height: 100svh;
+        margin: 0 auto;
+        padding: 0 28px 40px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 25px 0 12px;
+        color: rgba(214, 235, 245, 0.58);
+        font-size: 9px;
+        letter-spacing: 0.2em;
+      }
+
+      .topbar .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--ice);
+        font-family: var(--serif);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+      }
+
+      .topbar .brand::before {
+        content: "❄";
+        display: grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        border: 1px solid rgba(212, 238, 250, 0.25);
+        border-radius: 50%;
+        color: var(--blue);
+        font-size: 11px;
+        letter-spacing: 0;
+        box-shadow: 0 0 16px rgba(168, 221, 255, 0.1) inset;
+      }
+
+      .hero {
+        position: relative;
+        flex: 1 1 auto;
+        min-height: 580px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 82px 0 42px;
+      }
+
+      .hero-center {
+        position: relative;
+        z-index: 3;
+        max-width: 680px;
+        text-align: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 22px;
+        color: rgba(196, 230, 245, 0.62);
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.24em;
+      }
+
+      .eyebrow::before,
+      .eyebrow::after {
+        content: "";
+        width: 26px;
+        height: 1px;
+        background: rgba(179, 223, 243, 0.35);
+      }
+
+      .to {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 20px;
+        padding: 7px 13px 7px 8px;
+        border: 1px solid rgba(220, 243, 255, 0.2);
+        border-radius: 999px;
+        background: rgba(7, 22, 34, 0.35);
+        color: rgba(225, 244, 252, 0.76);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        backdrop-filter: blur(12px);
+      }
+
+      .to .seal {
+        display: grid;
+        place-items: center;
+        width: 23px;
+        height: 23px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #e6b2bd, #b96e7e);
+        color: #3b1b24;
+        font-family: var(--serif);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+
+      .to strong {
+        color: var(--ice);
+        font-family: var(--serif);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+      }
+
+      .hero h1 {
+        margin: 0;
+        color: #f4fbff;
+        font-family: var(--serif);
+        font-size: clamp(74px, 17vw, 148px);
+        font-weight: 700;
+        line-height: 0.96;
+        letter-spacing: -0.1em;
+        text-shadow:
+          0 0 26px rgba(190, 231, 250, 0.18),
+          0 14px 50px rgba(0, 10, 20, 0.4);
+      }
+
+      .hero h1 .outline {
+        color: transparent;
+        -webkit-text-stroke: 1.3px rgba(236, 249, 255, 0.9);
+        text-stroke: 1.3px rgba(236, 249, 255, 0.9);
+        text-shadow: 0 0 30px rgba(163, 219, 247, 0.15);
+      }
+
+      .sub {
+        margin: 27px auto 0;
+        color: rgba(210, 235, 246, 0.74);
+        font-family: var(--serif);
+        font-size: 13px;
+        line-height: 2.05;
+        letter-spacing: 0.06em;
+      }
+
+      .wishline {
+        margin: 17px auto 0;
+        color: rgba(190, 222, 237, 0.45);
+        font-size: 9px;
+        line-height: 1.8;
+        letter-spacing: 0.08em;
+      }
+
+      .wishline span {
+        margin: 0 5px;
+        color: rgba(243, 187, 198, 0.55);
+      }
+
+      .note {
+        position: absolute;
+        z-index: 2;
+        padding: 8px 12px;
+        border: 1px solid rgba(219, 243, 255, 0.2);
+        border-radius: 6px;
+        background: rgba(6, 22, 34, 0.42);
+        color: rgba(230, 246, 253, 0.78);
+        font-family: var(--serif);
+        font-size: 10px;
+        line-height: 1.55;
+        letter-spacing: 0.05em;
+        text-align: left;
+        box-shadow: 0 8px 24px rgba(0, 10, 20, 0.12);
+        backdrop-filter: blur(9px);
+        user-select: none;
+        animation: drift 7s ease-in-out infinite;
+      }
+
+      .note em {
+        display: block;
+        color: var(--rose);
+        font-style: normal;
+      }
+
+      .note i {
+        display: inline-block;
+        margin-right: 4px;
+        color: var(--rose);
+        font-style: normal;
+        font-size: 8px;
+      }
+
+      .n1 { top: 25px; left: 1%; transform: rotate(-4deg); animation-delay: -1s; }
+      .n2 { top: 12%; right: 2%; transform: rotate(4deg); animation-delay: -3s; }
+      .n3 { top: 48%; left: 0; transform: rotate(-3deg); animation-delay: -5s; }
+      .n4 { top: 43%; right: 1%; transform: rotate(3deg); animation-delay: -2s; }
+      .n5 { bottom: 17%; left: 6%; transform: rotate(2deg); animation-delay: -4s; }
+      .n6 { bottom: 22%; right: 4%; transform: rotate(-3deg); animation-delay: -6s; }
+
+      .n6.faint {
+        color: rgba(230, 246, 253, 0.58);
+        font-family: var(--sans);
+        font-size: 8px;
+        letter-spacing: 0.16em;
+      }
+
+      @keyframes drift {
+        0%, 100% { translate: 0 0; }
+        50% { translate: 0 -6px; }
+      }
+
+      .letter {
+        position: relative;
+        z-index: 4;
+        margin-top: 8px;
+        padding: 27px 30px 25px;
+        overflow: hidden;
+        border: 1px solid rgba(205, 234, 247, 0.22);
+        border-radius: 18px;
+        background:
+          radial-gradient(circle at 100% 0%, rgba(111, 178, 203, 0.14), transparent 35%),
+          linear-gradient(145deg, rgba(5, 20, 32, 0.74), rgba(6, 22, 34, 0.55));
+        box-shadow: 0 24px 70px rgba(0, 6, 12, 0.28), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+        backdrop-filter: blur(18px);
+      }
+
+      .letter::after {
+        content: "立冬";
+        position: absolute;
+        right: 16px;
+        bottom: -20px;
+        color: rgba(216, 241, 252, 0.035);
+        font-family: var(--serif);
+        font-size: 100px;
+        line-height: 1;
+        pointer-events: none;
+      }
+
+      .letter-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 17px;
+        border-bottom: 1px solid rgba(205, 234, 247, 0.13);
+        color: rgba(190, 222, 237, 0.5);
+        font-size: 8px;
+        letter-spacing: 0.18em;
+      }
+
+      .letter-head span:first-child {
+        color: rgba(223, 241, 249, 0.7);
+        font-family: var(--serif);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+      }
+
+      .letter p {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        color: rgba(217, 238, 247, 0.7);
+        font-family: var(--serif);
+        font-size: 12px;
+        line-height: 2.05;
+        letter-spacing: 0.08em;
+      }
+
+      .letter .lead {
+        max-width: 570px;
+        margin: 23px 0 14px;
+        color: #f2fbff;
+        font-size: 23px;
+        line-height: 1.65;
+        letter-spacing: 0.02em;
+      }
+
+      .letter .lead em {
+        color: #d4efff;
+        font-style: normal;
+        background: linear-gradient(90deg, #eaf9ff, #a6dcf4 72%, #d2bcc5);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .letter .body {
+        max-width: 540px;
+        margin-top: 18px;
+      }
+
+      .letter .soft {
+        color: var(--rose);
+      }
+
+      .letter .blessing {
+        margin-top: 20px;
+        color: #f5fbff;
+        font-size: 15px;
+        line-height: 1.9;
+      }
+
+      .letter .blessing span {
+        color: var(--rose);
+        font-size: 12px;
+      }
+
+      .letter-foot {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        margin-top: 23px;
+        padding-top: 13px;
+        border-top: 1px solid rgba(205, 234, 247, 0.12);
+        color: rgba(181, 217, 233, 0.42);
+        font-size: 8px;
+        letter-spacing: 0.12em;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center;
+        padding: 24px 0 4px;
+      }
+
+      .accept {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        height: 42px;
+        padding: 0 19px;
+        border: 1px solid rgba(216, 244, 255, 0.28);
+        border-radius: 999px;
+        background: rgba(9, 29, 43, 0.46);
+        color: rgba(236, 250, 255, 0.86);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        backdrop-filter: blur(12px);
+        transition: 180ms ease;
+      }
+
+      .accept span {
+        color: var(--blue);
+        font-size: 12px;
+      }
+
+      .accept:hover {
+        border-color: rgba(206, 240, 255, 0.55);
+        background: rgba(25, 63, 83, 0.48);
+        transform: translateY(-1px);
+      }
+
+      .accept:active { transform: translateY(0); }
+
+      .accepted {
+        max-height: 0;
+        overflow: hidden;
+        color: var(--rose);
+        font-family: var(--serif);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-align: center;
+        opacity: 0;
+        transition: 450ms ease;
+      }
+
+      .accepted.show {
+        max-height: 30px;
+        padding-top: 10px;
+        opacity: 1;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        padding-top: 15px;
+        color: rgba(184, 219, 234, 0.32);
+        font-size: 8px;
+        letter-spacing: 0.15em;
+      }
+
+      .footer .dot { color: rgba(243, 187, 198, 0.5); }
+
+      .is-blessed .snow-canvas { opacity: 1; }
+
+      @media (max-width: 680px) {
+        .page { padding: 0 17px 28px; }
+        .topbar { padding-top: 19px; }
+        .hero { min-height: 590px; padding: 70px 0 30px; }
+        .hero h1 { font-size: clamp(72px, 20vw, 108px); }
+        .sub { font-size: 11px; margin-top: 23px; }
+        .wishline { font-size: 8px; margin-top: 14px; }
+        .note { font-size: 9px; padding: 7px 9px; }
+        .n1 { top: 16px; left: -2px; }
+        .n2 { top: 11%; right: -3px; }
+        .n3 { top: 51%; left: -3px; }
+        .n4 { top: 46%; right: -4px; }
+        .n5 { bottom: 15%; left: 2%; }
+        .n6 { bottom: 20%; right: 1%; }
+        .letter { padding: 22px 20px 20px; border-radius: 15px; }
+        .letter .lead { font-size: 20px; }
+        .letter p { font-size: 11px; line-height: 2; }
+        .letter .blessing { font-size: 13px; }
+        .letter-foot { font-size: 7px; }
+        .moon { top: 4%; right: 2%; }
+        .ghost { top: 40%; font-size: 46vw; }
+      }
+
+      @media (max-width: 390px) {
+        .hero h1 { font-size: 70px; }
+        .n3, .n4 { display: none; }
+        .note { font-size: 8.5px; }
+        .letter .lead { font-size: 18px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .note { animation: none; }
+        .accept { transition: none; }
+        .snow-canvas { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="winter">
+      <div class="scene" aria-hidden="true">
+        <div class="aurora"></div>
+        <div class="moon"></div>
+        <div class="ghost">立冬快乐</div>
+
+        <svg class="forest far" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <g id="pine-far">
+              <path d="M0 0 16 45 7 41 32 92 14 85 47 152 0 139-47 152-14 85-32 92-7 41-16 45Z" fill="#487b8e"/>
+            </g>
+          </defs>
+          <g opacity=".55">
+            <use href="#pine-far" transform="translate(70 495) scale(.9)"/>
+            <use href="#pine-far" transform="translate(190 450) scale(.65)"/>
+            <use href="#pine-far" transform="translate(295 520) scale(1.05)"/>
+            <use href="#pine-far" transform="translate(410 470) scale(.7)"/>
+            <use href="#pine-far" transform="translate(520 505) scale(.88)"/>
+            <use href="#pine-far" transform="translate(665 450) scale(.6)"/>
+            <use href="#pine-far" transform="translate(780 500) scale(1)"/>
+            <use href="#pine-far" transform="translate(905 465) scale(.72)"/>
+            <use href="#pine-far" transform="translate(1025 522) scale(.94)"/>
+            <use href="#pine-far" transform="translate(1150 475) scale(.66)"/>
+          </g>
+        </svg>
+
+        <svg class="forest" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <linearGradient id="snowHill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#d9edf5" stop-opacity=".72"/>
+              <stop offset=".45" stop-color="#a7ccdc" stop-opacity=".28"/>
+              <stop offset="1" stop-color="#07131f" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="treeSnow" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#eaf8ff" stop-opacity=".92"/>
+              <stop offset="1" stop-color="#c4e2ee" stop-opacity=".18"/>
+            </linearGradient>
+            <g id="pine">
+              <path d="M0 0 23 66 10 60 43 126 20 116 58 195 0 181-58 195-20 116-43 126-10 60-23 66Z" fill="#0a1c28"/>
+              <path d="M0 0 20 58 7 52 38 114 15 105 52 184 0 171Z" fill="#123341" opacity=".5"/>
+              <path d="M-18 65 0 55 18 65 29 84-29 84Z" fill="url(#treeSnow)"/>
+              <path d="M-33 125 0 111 33 125 45 146-45 146Z" fill="url(#treeSnow)" opacity=".8"/>
+              <path d="M-43 177 0 162 43 177 51 194-51 194Z" fill="url(#treeSnow)" opacity=".72"/>
+            </g>
+          </defs>
+          <path d="M0 790 Q180 745 330 792 T640 780 T960 802 T1200 775 L1200 900 0 900Z" fill="url(#snowHill)"/>
+          <g class="near-trees">
+            <use href="#pine" transform="translate(30 540) scale(1.1)"/>
+            <use href="#pine" transform="translate(155 485) scale(.75)"/>
+            <use href="#pine" transform="translate(260 560) scale(1.15)"/>
+            <use href="#pine" transform="translate(365 515) scale(.85)"/>
+            <use href="#pine" transform="translate(455 590) scale(1.3)"/>
+            <use href="#pine" transform="translate(585 495) scale(.72)"/>
+            <use href="#pine" transform="translate(690 550) scale(1.1)"/>
+            <use href="#pine" transform="translate(805 505) scale(.8)"/>
+            <use href="#pine" transform="translate(920 585) scale(1.26)"/>
+            <use href="#pine" transform="translate(1045 520) scale(.9)"/>
+            <use href="#pine" transform="translate(1160 560) scale(1.15)"/>
+          </g>
+        </svg>
+
+        <div class="fog"></div>
+      </div>
+
+      <canvas class="snow-canvas" id="snowCanvas" aria-hidden="true"></canvas>
+
+      <div class="page">
+        <header class="topbar">
+          <span class="brand">立冬 · LIDONG</span>
+          <span>2026.11.07 / 19TH SOLAR TERM</span>
+        </header>
+
+        <section class="hero">
+          <div class="note n1"><i>❄</i>立冬了<em>我想你了</em></div>
+          <div class="note n2"><i>♡</i>你是我的<em>小暖炉</em></div>
+          <div class="note n3"><i>❄</i>天冷了<em>记得多穿点</em></div>
+          <div class="note n4"><i>♡</i>想陪你<em>一整个冬天</em></div>
+          <div class="note n5"><i>❄</i>一起吃饺子吧<em>热乎乎的</em></div>
+          <div class="note n6 faint"><i>✦</i>HELLO, WINTER</div>
+
+          <div class="hero-center">
+            <p class="eyebrow">WINTER BEGINS · 万物收藏</p>
+            <div class="to"><span class="seal">雯</span>致 <strong>雯雯老大</strong></div>
+            <h1>立冬<span class="outline">快乐</span></h1>
+            <p class="sub">风里已经有了冬天的味道<br />想把这一整个冬天的温柔，先送给你</p>
+            <p class="wishline">天冷了，多穿点 <span>·</span> 陪你一整个冬天 <span>·</span> 朋友，立冬快乐</p>
+          </div>
+        </section>
+
+        <section class="letter" aria-label="写给雯雯老大的冬日来信">
+          <div class="letter-head"><span>TO / 雯雯老大</span><span>一份冬日来信 · 请查收</span></div>
+          <p class="lead">愿你在这个冬天，<br /><em>没有风霜雨雪，只有暖阳高照。</em></p>
+          <p class="body">天冷了，记得多穿一点；忙的时候，也别忘了好好吃饭。<br />如果雪落下来，就当是我在轻轻说：<span class="soft">想陪你一整个冬天。</span></p>
+          <p class="blessing">立冬快乐，<br /><span>要一直做闪闪发光的雯雯老大。</span></p>
+          <div class="letter-foot"><span>立冬 · 2026</span><span>把冬天，过成春天</span></div>
+        </section>
+
+        <div class="actions">
+          <button class="accept" id="acceptBtn" type="button">收下这份冬日祝福 <span>❄</span></button>
+        </div>
+        <div class="accepted" id="accepted">祝福已收下 · 这个冬天也要闪闪发光</div>
+        <footer class="footer"><span>立冬快乐</span><span class="dot">·</span><span>致 雯雯老大</span></footer>
+      </div>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.getElementById("snowCanvas");
+        const ctx = canvas.getContext("2d");
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const flakes = [];
+        let width = 0;
+        let height = 0;
+        let dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let raf = 0;
+
+        function resize() {
+          width = window.innerWidth;
+          height = window.innerHeight;
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          canvas.style.width = width + "px";
+          canvas.style.height = height + "px";
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function makeFlake(extra = false) {
+          return {
+            x: Math.random() * width,
+            y: extra ? height * (0.75 + Math.random() * 0.25) : Math.random() * height,
+            r: extra ? 1.4 + Math.random() * 2.8 : 0.5 + Math.random() * 2.2,
+            vy: extra ? 0.7 + Math.random() * 1.2 : 0.16 + Math.random() * 0.7,
+            vx: -0.18 + Math.random() * 0.36,
+            alpha: 0.18 + Math.random() * 0.65,
+            phase: Math.random() * Math.PI * 2,
+            speed: 0.004 + Math.random() * 0.012,
+          };
+        }
+
+        function seed() {
+          flakes.length = 0;
+          const count = Math.min(150, Math.round((width * height) / 8500));
+          for (let i = 0; i < count; i += 1) flakes.push(makeFlake());
+        }
+
+        function burst() {
+          for (let i = 0; i < 55; i += 1) {
+            const flake = makeFlake(true);
+            flake.y = height * (0.35 + Math.random() * 0.65);
+            flakes.push(flake);
+          }
+          if (flakes.length > 260) flakes.splice(0, flakes.length - 260);
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, width, height);
+          for (const flake of flakes) {
+            flake.phase += flake.speed;
+            flake.y += flake.vy;
+            flake.x += flake.vx + Math.sin(flake.phase) * 0.16;
+            if (flake.y > height + 8) {
+              flake.y = -8;
+              flake.x = Math.random() * width;
+            }
+            if (flake.x < -8) flake.x = width + 8;
+            if (flake.x > width + 8) flake.x = -8;
+            ctx.beginPath();
+            ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(226, 247, 255, ${flake.alpha})`;
+            ctx.fill();
+          }
+          raf = requestAnimationFrame(draw);
+        }
+
+        function init() {
+          resize();
+          seed();
+          if (!reduceMotion) draw();
+          else {
+            draw();
+            cancelAnimationFrame(raf);
+            raf = 0;
+          }
+        }
+
+        document.getElementById("acceptBtn").addEventListener("click", (event) => {
+          const button = event.currentTarget;
+          button.innerHTML = '祝福已送达 <span>❄</span>';
+          button.disabled = true;
+          document.body.classList.add("is-blessed");
+          document.getElementById("accepted").classList.add("show");
+          burst();
+        });
+
+        let resizeTimer = 0;
+        window.addEventListener("resize", () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            resize();
+            seed();
+          }, 180);
+        });
+
+        init();
+      })();
+    </script>
+  </body>
+</html>
